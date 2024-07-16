@@ -1,0 +1,22 @@
+{
+    "primary": {
+        "500": "#272727",
+        "maleColor": "#001AFF",
+        "femaleColor": "#EB5A52"
+    },
+    "tertiary": {
+        "success": "#1FAD66"
+    },
+    "neutral": {
+        "50": "#D0D5DD",
+        "100": "#667085",
+        "300": "#475467",
+        "800": "#101828"
+    },
+    "base": {
+        "light": "#F2F2EF",
+        "baseGray05": "#E5E2DC",
+        "baseGray80": "#30302E",
+        "background": "#F1EEE8"
+    }
+}
