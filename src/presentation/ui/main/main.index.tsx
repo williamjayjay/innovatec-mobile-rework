@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen'
 import { IMain } from "./types/main.type";
 import { useMain } from "./hooks/main.hook";
+import { StudentsRepository } from "@/data/repositories/Students/StudentsRepository";
 
 SplashScreen.preventAutoHideAsync().then()
 
@@ -13,6 +14,20 @@ export const Main: FC<IMain.Input> = (props = {}) => {
     if (!fontsLoaded && !fontError) {
         return null;
     }
+
+    const instanceStudentsRepository = new StudentsRepository('/api');
+
+    const teste = async () => {
+        const resultSturentRepository = await instanceStudentsRepository.getStudents({
+            page:0,
+            results:10,
+            include:'gender,name,location,email,login,dob,phone,picture,nat',
+            gender:'male'
+        })
+        console.log('resultSturentRep2ository', resultSturentRepository)
+    }
+
+    teste()
 
     return (
 
