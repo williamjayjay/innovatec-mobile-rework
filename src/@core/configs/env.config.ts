@@ -4,13 +4,12 @@ import { checkLastBar } from './utils/utils.config';
 import { schemaValidate } from './validate/validateEnv';
 
 const __rootEnvTransformed = (env: { apiUrl: string | undefined }) => {
-    const response = schemaValidate
-        .transform((data) => {
+
+    const response = schemaValidate.transform((data) => {
             return {
                 apiUrl: checkLastBar(data.apiUrl),
-            };
-        })
-        .safeParse(env);
+            }
+        }).safeParse(env);
 
     if (response.success) {
         return Object.freeze(response.data);
@@ -19,11 +18,9 @@ const __rootEnvTransformed = (env: { apiUrl: string | undefined }) => {
     const msg = transformError(
         Array.isArray(response.error) ? response.error[0] : response.error,
     );
+    
     throw new InternalException(msg, 500);
 };
 
-const rootEnv = __rootEnvTransformed({
-    apiUrl: process.env.EXPO_PUBLIC_URL,
-});
 
-export { rootEnv }
+export {  __rootEnvTransformed };

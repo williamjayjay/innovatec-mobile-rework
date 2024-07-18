@@ -24,9 +24,7 @@ export const useMain = ({ }: IMain.Input): IMain.Output => {
   });
 
   const onLayoutRootView = useCallback(async () => {
-    console.log('step 1 - onLayoutRootView')
     if (fontsLoaded || fontError) {
-      console.log('step 2 - onLayoutRootView')
 
       await SplashScreen.hideAsync();
     }

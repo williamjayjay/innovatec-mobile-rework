@@ -35,7 +35,6 @@ class StudentsRepository implements StudentsRepositoryInterface {
       return Student.extractDataStudent(response?.data?.results)
 
     } catch (error) {
-      console.log(error)
       throw new Error('Não foi possível obter os alunos.');
     }
   }

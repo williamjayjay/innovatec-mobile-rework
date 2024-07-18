@@ -24,7 +24,6 @@ export const Main: FC<IMain.Input> = (props = {}) => {
             include:'gender,name,location,email,login,dob,phone,picture,nat',
             gender:'male'
         })
-        console.log('resultSturentRep2ository', resultSturentRepository)
     }
 
     teste()

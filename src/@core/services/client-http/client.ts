@@ -1,4 +1,4 @@
-import { rootEnv } from "@/@core/configs/env.config";
+import { rootEnv } from "@/@core/configs/rootEnv";
 import axios from "axios";
 
  const _api = axios.create({
