@@ -38,7 +38,7 @@ export interface StudentDTO {
     city: string;
     state: string;
     country: string;
-    postcode: number;
+    postcode: string;
     coordinates: Coordinates;
     timezone: Timezone;
   }

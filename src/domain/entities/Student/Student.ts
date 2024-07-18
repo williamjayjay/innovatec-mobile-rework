@@ -29,7 +29,7 @@ class Student {
     return this
   }
 
-  static extractDataStudent(array: UserApiResponse[]): Student[] | [] {
+  static extractDataStudent(array?: UserApiResponse[]): Student[] | [] {
     if (!array || array.length === 0) {
       return [];
     }

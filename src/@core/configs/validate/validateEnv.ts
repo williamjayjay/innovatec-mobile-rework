@@ -1,10 +1,13 @@
 import { z } from 'zod';
 
+const MESSAGE_ERROR_VALIDATE_ENV = '.env variable EXPO_PUBLIC_URL is required (Ex. https://randomuser.me)'
+
 const schemaValidate = z.object({
-    apiUrl: z.string().url({
-        message:
-            '.env variable EXPO_PUBLIC_URL is required (Ex. https://randomuser.me)',
-    }),
+    apiUrl: z.string({
+        required_error: MESSAGE_ERROR_VALIDATE_ENV,
+    }).url({
+        message: MESSAGE_ERROR_VALIDATE_ENV,
+    })
 });
 
-export {schemaValidate}
+export {schemaValidate, MESSAGE_ERROR_VALIDATE_ENV}
