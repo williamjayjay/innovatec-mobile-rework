@@ -3,10 +3,10 @@ import { SearchParams, StudentResponseApi } from "./types/student.type";
 import { clientHttp } from "@/@core/services/client-http/client";
 
 class StudentsRepository implements StudentsRepositoryInterface {
-  apiUrl: string;
+  customApiUrl: string;
 
-  constructor(apiUrl: string) {
-    this.apiUrl = apiUrl;
+  constructor(customApiUrl?: string) {
+    this.customApiUrl = customApiUrl || '' ;
   }
 
   async getStudents({
@@ -17,7 +17,7 @@ class StudentsRepository implements StudentsRepositoryInterface {
   }: SearchParams): Promise<StudentResponseApi> {
 
     try {
-      const response = await clientHttp.get<StudentResponseApi>(this.apiUrl, {
+      const response = await clientHttp.get<StudentResponseApi>(this.customApiUrl, {
         params: {
           page,
           results,
@@ -26,6 +26,7 @@ class StudentsRepository implements StudentsRepositoryInterface {
         }
       })
 
+      console.log('repository STEP1 ---')
       return response.data
 
     } catch (error) {

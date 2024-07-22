@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useHomeContext } from "../contexts/useHome.context";
 
 export const useHomeViewModel = ({ }) => {
@@ -9,9 +9,6 @@ export const useHomeViewModel = ({ }) => {
    
   // }, []);
 
-  useEffect(() => {
-    homeContext.getValuesFromRepository()
-    }, [])
 
   return {
    students: homeContext.students,
