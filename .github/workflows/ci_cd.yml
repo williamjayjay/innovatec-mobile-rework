@@ -6,24 +6,30 @@ on:
       - step-9-ci-cd
 
 jobs:
-  # CI:
-  #   name: Continuous Integration
-  #   runs-on: ubuntu-latest
+  CI:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  #     - name: Setup Node
-  #       uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 20.x
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
 
-  #     - name: Install dependencies
-  #       run: npm install --legacy-peer-deps
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
 
-  #     - name: Run Tests
-  #       run: npm test
+      - name: Install Expo Font
+        run: npx expo install expo-font
+
+      - name: Install Google Font Karla
+        run: npm install @expo-google-fonts/karla
+
+      - name: Run Tests
+        run: npm test
   
   CD: 
     name: Continuous Delivery
