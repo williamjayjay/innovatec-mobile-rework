@@ -26,7 +26,7 @@ jobs:
         run: npm install -g expo-cli
 
       - name: Install Expo Font
-        run: expo install expo-font
+        run: npm expo install expo-font --legacy-peer-deps
 
       - name: Install Google Font Karla
         run: npm install @expo-google-fonts/karla
