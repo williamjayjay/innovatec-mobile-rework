@@ -25,7 +25,25 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      {
+        "fonts": [
+          "node_modules/@expo-google-fonts/karla/Karla_200ExtraLight_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_200ExtraLight.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_300Light.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_300Light_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_400Regular.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_400Regular_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_500Medium.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_500Medium_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_600SemiBold.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_600SemiBold_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_700Bold.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_700Bold_Italic.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_800ExtraBold.ttf",
+          "node_modules/@expo-google-fonts/karla/Karla_800ExtraBold_Italic.ttf"
+        ]
+      }
     ],
     "extra": {
       "eas": {
