@@ -3,7 +3,7 @@ name: CI/CD
 on:
   push:
     branches:
-      - step-9-ci-cd
+      - develop
 
 jobs:
   CI:
@@ -46,7 +46,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EAS_EXPO_TOKEN_TEST }}
 
-      - name: Install dependecies
+      - name: Install dependencies again
         run: npm install --legacy-peer-deps
 
       - name: Build
