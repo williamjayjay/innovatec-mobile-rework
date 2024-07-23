@@ -22,15 +22,6 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Install Expo CLI
-        run: npm install -g expo-cli
-
-      - name: Install Expo Font
-        run: npm expo install expo-font --legacy-peer-deps
-
-      - name: Install Google Font Karla
-        run: npm install @expo-google-fonts/karla
-
       - name: Run Tests
         run: npm test
   
@@ -53,8 +44,10 @@ jobs:
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          packager: npm
           token: ${{ secrets.EAS_EXPO_TOKEN_TEST }}
+
+      - name: Install dependecies
+        run: npm install --legacy-peer-deps
 
       - name: Build
         run: eas build --platform android --profile preview --non-interactive --no-wait
