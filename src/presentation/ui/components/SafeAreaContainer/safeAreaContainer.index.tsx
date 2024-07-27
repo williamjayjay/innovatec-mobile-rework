@@ -31,7 +31,7 @@ export const SafeAreaContainer: FC<{
             return (
                 <View
                     className={stylContainer}
-                    style={{ paddingTop: insets.top + 8, paddingBottom: insets.bottom + 8 , paddingHorizontal:8}}
+                    style={{ paddingTop: insets.top , paddingBottom: insets.bottom  , paddingHorizontal:8}}
                     testID={testID}>
                     {children}
                 </View>
