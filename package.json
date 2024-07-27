@@ -34,10 +34,12 @@
   "dependencies": {
     "@expo-google-fonts/karla": "^0.2.3",
     "@faker-js/faker": "^8.4.1",
+    "@shopify/flash-list": "1.6.4",
     "@tanstack/react-query": "^5.48.0",
     "@testing-library/react-hooks": "^8.0.1",
     "axios": "^1.7.2",
     "classnames": "^2.5.1",
+    "date-fns": "^3.6.0",
     "expo": "51.0.22",
     "expo-font": "~12.0.9",
     "expo-splash-screen": "~0.27.5",
