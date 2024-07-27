@@ -1,12 +1,14 @@
+import { IRoute } from "@/presentation/ui/routes/types/route.type";
+
 export namespace IMain {
     export interface Input {
         awaitSplashTimer?: number;
     }
 
     export interface Output {
-        fontsLoaded: boolean | null;
-        fontError: Error | null;
         onLayoutRootView: () => Promise<void>;
+        isLoaded: boolean | null;
+        initialRoute: IRoute.Input['initialRoute']
 
     }
 }

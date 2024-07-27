@@ -1,7 +1,7 @@
 import { FC } from "react";
-import { useHomeViewModel } from "@/presentation/viewmodels/HomeViewModel/hooks/home.hook";
-import { ActivityIndicator, Keyboard, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
-import { IHome } from "@/presentation/ui/screens/HomeScreen/types/home.type";
+import { useHomeViewModel } from "@/presentation/viewmodels/auth/HomeViewModel/hooks/home.hook";
+import { ActivityIndicator, Keyboard, Text, TouchableOpacity, View } from "react-native";
+import { IHome } from "@/presentation/ui/screens/auth/HomeScreen/types/home.type";
 import { SafeAreaContainer } from "@/presentation/ui/components/SafeAreaContainer/safeAreaContainer.index";
 import { Feather } from '@expo/vector-icons';
 import { InputCustom } from "@/presentation/ui/components/InputCustom/inputCustom.index";

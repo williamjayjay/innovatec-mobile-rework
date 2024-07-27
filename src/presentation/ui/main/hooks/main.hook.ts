@@ -8,11 +8,12 @@ import {
   Karla_700Bold
 } from '@expo-google-fonts/karla';
 import * as SplashScreen from 'expo-splash-screen'
+import { IRoute } from "@/presentation/ui/routes/types/route.type";
 
-import { useCallback } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IMain } from '../types/main.type';
 
-export const useMain = ({ }: IMain.Input): IMain.Output => {
+export const useMain = ({ awaitSplashTimer = 100 }: IMain.Input): IMain.Output => {
 
   const [fontsLoaded, fontError] = useFonts({
     Karla_200ExtraLight,
@@ -23,18 +24,49 @@ export const useMain = ({ }: IMain.Input): IMain.Output => {
     Karla_700Bold
   });
 
+  const [appIsReady, setAppIsReady] = useState(false);
+
+  useEffect(() => {
+    let cleartimer: NodeJS.Timeout;
+
+    if (fontsLoaded) {
+
+      cleartimer = setTimeout(() => {
+        setAppIsReady(true);
+      }, awaitSplashTimer);
+
+    }
+    return () => {
+
+      if (cleartimer) clearTimeout(cleartimer);
+
+    };
+  }, [awaitSplashTimer, fontsLoaded]);
+
+
+  const isLoaded = appIsReady 
+
+  console.log('appIsReady --->',appIsReady)
+
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
+    if (isLoaded) {
 
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [isLoaded,]);
 
+  const initialRoute = useMemo(() => {
+
+    return {
+      rootStack: "public",
+      rootStackScreen: "home",
+    };
+
+  }, []) as IRoute.Input['initialRoute']
 
   return {
-    fontsLoaded,
-    fontError,
     onLayoutRootView,
-
+    initialRoute,
+    isLoaded
   };
 };
