@@ -14,11 +14,13 @@ import { Header } from "@/presentation/ui/components/Header/header.index";
 
 const HomeScreen: FC<IHome.Input> = () => {
 
-    const { students: studentsDataQueryStatic, isFetchingNextPage, fetchNextPage, searchTerm, handleSearch, filteredData, dataStudentsInfinity, insets, isFetching, onRefreshFlatList } = useHomeViewModel({})
+    const { isFetchingNextPage, fetchNextPageCustom, searchTerm, handleSearch, filteredData, dataStudentsInfinity, insets, isFetching, onRefreshFlatList, refetchActivated } = useHomeViewModel({})
 
-    const studentsDataQuery = dataStudentsInfinity?.pages?.flat?.()
+    const studentsDataQuery = dataStudentsInfinity
 
     return (
+        <>
+         {refetchActivated && <ActivityIndicator size='large' color={colors.neutral[800]} className=" self-center z-[99] top-[50%] absolute" />}
         <SafeAreaContainer disableScroll containerClassName="bg-base-light px-4" >
 
             <TouchableOpacity
@@ -73,7 +75,7 @@ const HomeScreen: FC<IHome.Input> = () => {
 
                     />}
                     keyExtractor={(item, index) => index.toString()}
-                    onEndReached={() => fetchNextPage()}
+                    onEndReached={() => fetchNextPageCustom()}
                     ListFooterComponent={() => (
                         isFetchingNextPage ? (
                             <View className="py-6 w-full items-center gap-y-2" >
@@ -90,6 +92,8 @@ const HomeScreen: FC<IHome.Input> = () => {
             }
 
         </SafeAreaContainer>
+        </>
+
     );
 };
 

@@ -2,11 +2,11 @@ import { type FC, type ReactElement } from 'react';
 import { HomeProvider } from '@/presentation/viewmodels/auth/HomeViewModel/contexts/home.context';
 
  const AllModelsContexts: FC<
-  { children: ReactElement | ReactElement[] }
-> = ({ children }) => {
+  { children: ReactElement | ReactElement[], appIsLoaded:boolean }
+> = ({ children , appIsLoaded}) => {
 
   return (
-    <HomeProvider defaultValue={[]}>
+    <HomeProvider appIsLoaded={appIsLoaded}>
       {children}
     </HomeProvider>
   );

@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { useHomeContext } from "../contexts/useHome.context";
-import { InfiniteData } from "@tanstack/react-query";
 import { StudentServerEntity } from "@/@core/domains/server-entities/student.server-entity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Keyboard } from "react-native";
@@ -9,52 +8,14 @@ export const useHomeViewModel = ({ }) => {
   
   const insets = useSafeAreaInsets();
   
-  const { students: studentsContext, storageDataStudents, isFetchingNextPage, fetchNextPage , dataStudentsInfinity, isFetching, refetch} = useHomeContext();
+  const { storageDataStudents, isFetchingNextPage, fetchNextPageCustom , dataStudentsInfinityRoot, isFetching, refetchCustom, refetchActivated} = useHomeContext();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredData, setFilteredData] = useState<StudentServerEntity[]>([]);
+  const [filteredData, setFilteredData] = useState<StudentServerEntity[] | null>();
+  
+  console.log('storageDataStudents 000000', storageDataStudents?.[0]?.name)
+  console.log('dataStudentsInfinityRoot 11111', dataStudentsInfinityRoot?.pages?.flat?.()?.[0]?.name)
 
-
-  // -- estados acima
-
-  //  todo [ ] - criar logica ao incializar o app, no contexto, verificar se existe valor no storage, se tiver irá popular o useState lá do context, e caso contrário irá fazer o fetch com o useQuery.
-
-  // const handleSearch = useCallback(
-  //   (value: string) => {
-
-  //     setSearchTerm(value)
-
-  //     if (dataStudentsInfinity && value) {
-  //       // const allStudents = studentsContext((page: any) => page);
-  //       const allStudents = dataStudentsInfinity?.pages.flatMap((page: any) => page);
-
-  //       const filteredStudents = studentsContext.filter((student: StudentServerEntity) =>
-  //         (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
-  //       );
-
-  //       return setFilteredData(filteredStudents);
-  //     }
-
-  //     if (storageDataStudents && !dataStudentsInfinity && value) {
-  //       const allStudents = storageDataStudents
-
-  //       const filteredStudents = allStudents.filter((student: StudentServerEntity) =>
-  //         (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
-  //       );
-  //       return setFilteredData(filteredStudents);
-  //     }
-  //     else if (value === '' && !studentsContext) {
-  //       setFilteredData(storageDataStudents)
-  //     }
-  //     else if (value === '' && studentsContext) {
-  //       const allStudents = dataStudentsInfinity?.pages?.flatMap((page: any) => page);
-
-  //       setFilteredData(allStudents)
-  //     }
-
-  //   },
-  //   [searchTerm],
-  // )
-
+  const dataStudentsInfinity = storageDataStudents ? storageDataStudents : dataStudentsInfinityRoot?.pages?.flat?.() as StudentServerEntity[]
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -62,7 +23,7 @@ export const useHomeViewModel = ({ }) => {
       setSearchTerm(value)
 
       if (dataStudentsInfinity && value) {
-        const allStudents = dataStudentsInfinity.pages.flatMap((page: any) => page);
+        const allStudents = dataStudentsInfinity.map((page: any) => page);
 
         const filteredStudents = allStudents.filter((student: any) =>
           (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
@@ -74,7 +35,7 @@ export const useHomeViewModel = ({ }) => {
       if (storageDataStudents && !dataStudentsInfinity && value) {
         const allStudents = storageDataStudents
 
-        const filteredStudents = allStudents.filter((student: any) =>
+        const filteredStudents = allStudents?.filter((student: any) =>
           (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
         );
         return setFilteredData(filteredStudents);
@@ -83,7 +44,7 @@ export const useHomeViewModel = ({ }) => {
         setFilteredData(storageDataStudents)
       }
       else if (value === '' && dataStudentsInfinity) {
-        const allStudents = dataStudentsInfinity.pages.flatMap((page: any) => page);
+        const allStudents = dataStudentsInfinity.map((page: any) => page);
 
         setFilteredData(allStudents)
       }
@@ -92,29 +53,24 @@ export const useHomeViewModel = ({ }) => {
     [searchTerm],
   )
 
-
-
-  // const callBackNotUsed = useCallback(async () => {
-
-  // }, []);
-
-
-  const onRefreshFlatList = useCallback(async () => {
+  const onRefreshFlatList = useCallback( () => {
+    console.log('ZZZZZZ->')
     setSearchTerm('')
-    await refetch();
+     refetchCustom();
     Keyboard.dismiss()
   }, []);
 
   return {
-    students: studentsContext,
     searchTerm,
     handleSearch,
     filteredData,
     isFetchingNextPage,
-    fetchNextPage,
+    fetchNextPageCustom,
     dataStudentsInfinity,
     insets,
     isFetching,
-    onRefreshFlatList
+    onRefreshFlatList,
+    refetchActivated
+  
   };
 };

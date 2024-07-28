@@ -6,18 +6,18 @@ import { FetchNextPageOptions, InfiniteQueryObserverResult, InfiniteData, Refetc
 export namespace IHome {
   export interface Input {
     children: ReactNode;
-    defaultValue: StudentServerEntity[] | [];
+    appIsLoaded: boolean
   }
 
   export interface Output {
-    students: StudentServerEntity[] | [];
-    storageDataStudents: StudentServerEntity[] | [];
-    cleanStudents: () => void;
+    storageDataStudents: StudentServerEntity[] | [] | null;
     getValuesFromRepository: ({ page, results, gender, inc }: SearchParams) => void;
     isFetchingNextPage:boolean;
-    fetchNextPage:(options?: FetchNextPageOptions | undefined) => any;
-    dataStudentsInfinity: InfiniteData<StudentServerEntity[]> | undefined;
-    refetch:(options?: RefetchOptions | undefined) => any;
+    fetchNextPageCustom:(options?: FetchNextPageOptions | undefined) => any;
+    dataStudentsInfinityRoot: InfiniteData<StudentServerEntity[]> | undefined | StudentServerEntity[] | any;
+    refetchCustom:(options?: RefetchOptions | undefined) => any;
     isFetching:boolean;
+    refetchActivated:boolean;
+    
   }
 }

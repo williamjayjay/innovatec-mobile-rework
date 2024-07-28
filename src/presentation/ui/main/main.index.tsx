@@ -26,7 +26,7 @@ const Main: FC<IMain.Input> = (props = {}) => {
                 <View className="flex-1" testID="main" onLayout={onLayoutRootView}>
 
                     <ReactQuery>
-                        <AllModelsContexts  >
+                        <AllModelsContexts appIsLoaded={isLoaded} >
                             <Routes initialRoute={initialRoute} />
                             <Toast
                                 position="top"
