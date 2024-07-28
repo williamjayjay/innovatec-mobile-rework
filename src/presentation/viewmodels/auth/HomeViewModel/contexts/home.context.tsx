@@ -15,13 +15,13 @@ const HomeContext = createContext<IHome.Output>({
   dataStudentsInfinityRoot: undefined,
   refetchCustom: (options?: RefetchOptions | undefined) => { },
   isFetching: false,
-  refetchActivated:false
+  refetchActivated: false
 });
 
 const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
   const [storageDataStudents, setStorageDataStudents] = useState<StudentServerEntity[] | [] | null>(null);
   const [refetchActivated, setRefetchActivated] = useState(false);
-  
+
   const studentRepository = new StudentsRepository()
 
   const getSudentsUseCase = new GetStudentsUseCase(studentRepository);
@@ -29,8 +29,6 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
   const queryClient = useQueryClient();
 
   const getValuesFromRepository = useCallback(async ({ page, results, gender = 'male', inc = '' }: SearchParams) => {
-    console.log('GET XXX3', page)
-
     try {
 
       const resultStudentUseCase = await getSudentsUseCase.execute({
@@ -50,6 +48,8 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
 
     const savedDataStorageStudents = await StudentsStorage.getAllStudentsStorage();
 
+    console.log('VALUE STORAGE, ' ,savedDataStorageStudents?.[0]?.name)
+
     if (savedDataStorageStudents) {
       console.log('###### A1')
       return setStorageDataStudents(savedDataStorageStudents)
@@ -63,18 +63,17 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
   const { data: dataStudentsInfinityRoot, fetchNextPage, isFetchingNextPage, isLoading, refetch, isFetching, isRefetching } = useInfiniteQuery({
 
     queryKey: ['students'],
-    queryFn: ({ pageParam  }) => getValuesFromRepository({
+    queryFn: ({ pageParam }) => getValuesFromRepository({
       page: pageParam,
       results: 10,
       inc: 'gender,name,location,email,login,dob,phone,picture,nat',
       gender: 'male',
-      
+
     }),
-    enabled: !!storageDataStudents,
+    enabled: true,
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
 
-      console.log('refetchActivated ---',refetchActivated)
       const nextPage = pages?.length;
       return nextPage
       // return refetchActivated ? undefined : nextPage
@@ -85,10 +84,11 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
 
   useEffect(() => {
     console.log('appIsLoaded ----->>', appIsLoaded)
+    console.log('dataStudentsInfinityRoot?.pages?.flat?.()',dataStudentsInfinityRoot?.pages?.flat?.())
     checkAndSaveStudentsInStorage(dataStudentsInfinityRoot?.pages?.flat?.())
   }, [appIsLoaded])
 
-  const refetchCustom = useCallback(async()  => {
+  const refetchCustom = useCallback(async () => {
     setRefetchActivated(true)
 
     if (isFetching) return;
@@ -106,7 +106,7 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
 
   }, [storageDataStudents, isFetching, refetchActivated]);
 
-  const fetchNextPageCustom = useCallback(async() => {
+  const fetchNextPageCustom = useCallback(async () => {
 
     if (isFetchingNextPage) return;
 
