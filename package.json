@@ -49,7 +49,6 @@
     "expo-status-bar": "~1.12.1",
     "jest-expo": "^51.0.0",
     "jest-native": "^3.0.0",
-    "moti": "^0.29.0",
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-content-loader": "^7.0.2",
