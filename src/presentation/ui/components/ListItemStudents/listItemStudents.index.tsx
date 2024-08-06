@@ -6,7 +6,7 @@ import { TouchableOpacity, Image, Text, View } from "react-native";
 interface ListItemProps {
   data: StudentServerEntity;
   toggleFn?: () => void;
-  setDataSelected?: React.Dispatch<React.SetStateAction<StudentServerEntity | null>>;
+  setDataSelected: React.Dispatch<React.SetStateAction<StudentServerEntity | null>>;
 }
 
 const ListItemStudents: React.FC<ListItemProps> = ({ data, setDataSelected, toggleFn = () => { } }) => {
@@ -25,10 +25,10 @@ const ListItemStudents: React.FC<ListItemProps> = ({ data, setDataSelected, togg
 
       className="h-[100px] w-full bg-white rounded-lg flex-row   px-3"
       onPress={() => {
-        // toggleFn();
-        // setTimeout(() => {
-        //   setDataSelected(data);
-        // }, 300);
+        toggleFn();
+        setTimeout(() => {
+          setDataSelected(data);
+        }, 300);
       }}>
 
       <View className="items-center justify-center" >

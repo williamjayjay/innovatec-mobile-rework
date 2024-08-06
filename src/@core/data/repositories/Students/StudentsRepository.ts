@@ -26,11 +26,9 @@ class StudentsRepository implements StudentsRepositoryInterface {
         }
       })
 
-      console.log('repository STEP1 ---')
       return response.data
 
     } catch (error) {
-      console.log('error', error)
       throw new Error('Não foi possível obter os alunos.');
     }
   }

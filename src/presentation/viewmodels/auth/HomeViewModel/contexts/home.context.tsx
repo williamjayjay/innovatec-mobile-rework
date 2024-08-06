@@ -3,8 +3,8 @@ import { IHome } from '../types/home.type';
 import { StudentServerEntity } from '@/@core/domains/server-entities/student.server-entity';
 import { StudentsRepository } from '@/@core/data/repositories/Students/StudentsRepository';
 import { GetStudentsUseCase } from '@/@core/domains/usecases/Student/GetStudentUseCase';
-import { FetchNextPageOptions, InfiniteData, InfiniteQueryObserverResult, RefetchOptions, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { SearchParams } from '@/@core/data/repositories/Students/types/student.type';
+import { FetchNextPageOptions, RefetchOptions, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { Gender, SearchParams } from '@/@core/data/repositories/Students/types/student.type';
 import { StudentsStorage } from '@/@core/services/students-storage/students-storage.index';
 
 const HomeContext = createContext<IHome.Output>({
@@ -15,15 +15,15 @@ const HomeContext = createContext<IHome.Output>({
   dataStudentsInfinityRoot: undefined,
   refetchCustom: (options?: RefetchOptions | undefined) => { },
   isFetching: false,
-  refetchActivated: false
+  filterByGender: "",
+  setFilterByGender: () => { }
 });
 
 const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
   const [storageDataStudents, setStorageDataStudents] = useState<StudentServerEntity[] | [] | null>(null);
-  const [refetchActivated, setRefetchActivated] = useState(false);
+  const [filterByGender, setFilterByGender] = useState<Gender>("");
 
   const studentRepository = new StudentsRepository()
-
   const getSudentsUseCase = new GetStudentsUseCase(studentRepository);
 
   const queryClient = useQueryClient();
@@ -38,88 +38,82 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
         gender: gender,
       });
 
+      if (!storageDataStudents) {
+        void await StudentsStorage.addAllStudentsStorage(resultStudentUseCase);
+        setStorageDataStudents(resultStudentUseCase)
+      }
+
       return resultStudentUseCase
     } catch (error) {
       throw new Error('Não foi possível obter dados dos estudantes.');
     }
-  }, []);
+  }, [storageDataStudents, appIsLoaded]);
 
-  const checkAndSaveStudentsInStorage = useCallback(async (resultStudentUseCase: any | StudentServerEntity[] | IHome.Output['dataStudentsInfinityRoot']) => {
 
-    const savedDataStorageStudents = await StudentsStorage.getAllStudentsStorage();
+  const { data: dataStudentsInfinityRoot, fetchNextPage, isFetchingNextPage, refetch, isFetching } = useInfiniteQuery({
 
-    console.log('VALUE STORAGE, ' ,savedDataStorageStudents?.[0]?.name)
-
-    if (savedDataStorageStudents) {
-      console.log('###### A1')
-      return setStorageDataStudents(savedDataStorageStudents)
-    }
-    console.log('###### A222')
-
-    void await StudentsStorage.addAllStudentsStorage(resultStudentUseCase);
-    return
-  }, []);
-
-  const { data: dataStudentsInfinityRoot, fetchNextPage, isFetchingNextPage, isLoading, refetch, isFetching, isRefetching } = useInfiniteQuery({
-
-    queryKey: ['students'],
+    queryKey: ['students', filterByGender],
     queryFn: ({ pageParam }) => getValuesFromRepository({
       page: pageParam,
       results: 10,
       inc: 'gender,name,location,email,login,dob,phone,picture,nat',
-      gender: 'male',
+      gender: filterByGender,
 
     }),
-    enabled: true,
+    enabled: false,
     initialPageParam: 0,
     getNextPageParam: (lastPage, pages) => {
 
       const nextPage = pages?.length;
       return nextPage
-      // return refetchActivated ? undefined : nextPage
     },
 
   });
 
+  const checkAndSaveStudentsInStorage = useCallback(async () => {
+
+    const savedDataStorageStudents = await StudentsStorage.getAllStudentsStorage();
+
+    if (savedDataStorageStudents) {
+      return setStorageDataStudents(savedDataStorageStudents)
+    }
+
+    return await refetchCustom()
+
+  }, [appIsLoaded]);
 
   useEffect(() => {
-    console.log('appIsLoaded ----->>', appIsLoaded)
-    console.log('dataStudentsInfinityRoot?.pages?.flat?.()',dataStudentsInfinityRoot?.pages?.flat?.())
-    checkAndSaveStudentsInStorage(dataStudentsInfinityRoot?.pages?.flat?.())
+    checkAndSaveStudentsInStorage()
   }, [appIsLoaded])
 
   const refetchCustom = useCallback(async () => {
-    setRefetchActivated(true)
 
     if (isFetching) return;
 
-    queryClient.setQueryData(['students'], {
+    queryClient.setQueryData(['students', filterByGender], {
       pages: [],
       pageParams: [],
     });
 
     await refetch()
 
-    setRefetchActivated(false)
-
-    storageDataStudents !== null && setStorageDataStudents(null);
-
-  }, [storageDataStudents, isFetching, refetchActivated]);
+  }, [isFetching, filterByGender]);
 
   const fetchNextPageCustom = useCallback(async () => {
 
     if (isFetchingNextPage) return;
 
+    if(!dataStudentsInfinityRoot?.pages){
+      await refetch()
+    }
+
     await fetchNextPage()
 
-    storageDataStudents !== null && setStorageDataStudents(null);
+  }, [isFetchingNextPage, dataStudentsInfinityRoot]);
 
-  }, [storageDataStudents, isFetchingNextPage]);
-
-  console.log('AAAAAAAAAAAAAAAAAAAAAAA', refetchActivated)
 
   return (
-    <HomeContext.Provider value={{ dataStudentsInfinityRoot, storageDataStudents, isFetchingNextPage, getValuesFromRepository, fetchNextPageCustom, isFetching, refetchCustom, refetchActivated }}>
+    <HomeContext.Provider value={{ dataStudentsInfinityRoot, storageDataStudents, isFetchingNextPage, getValuesFromRepository, fetchNextPageCustom, isFetching, refetchCustom, filterByGender, setFilterByGender }}>
       {children}
     </HomeContext.Provider>
   );

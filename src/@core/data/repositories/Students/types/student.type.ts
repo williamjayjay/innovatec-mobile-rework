@@ -1,10 +1,12 @@
 import { StudentServerEntityResultsApi, StudentServerEntityInfoApi } from "@/@core/domains/server-entities/student.server-entity";
 
+
+type Gender = 'male' | 'female' | "";
  interface SearchParams {
     page?: number;
     results?: number;
     inc?: string;
-    gender?: 'male' | 'female';
+    gender: Gender
 }
 
 
@@ -13,4 +15,4 @@ interface StudentResponseApi {
     info: StudentServerEntityInfoApi
 }
 
-export {SearchParams, StudentResponseApi}
+export {SearchParams, StudentResponseApi, Gender}

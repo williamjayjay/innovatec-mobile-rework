@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { StudentServerEntity } from '@/@core/domains/server-entities/student.server-entity';
-import { SearchParams } from '@/@core/data/repositories/Students/types/student.type';
-import { FetchNextPageOptions, InfiniteQueryObserverResult, InfiniteData, RefetchOptions } from '@tanstack/react-query';
+import { Gender, SearchParams } from '@/@core/data/repositories/Students/types/student.type';
+import { FetchNextPageOptions, InfiniteData, RefetchOptions } from '@tanstack/react-query';
 
 export namespace IHome {
   export interface Input {
@@ -12,12 +12,13 @@ export namespace IHome {
   export interface Output {
     storageDataStudents: StudentServerEntity[] | [] | null;
     getValuesFromRepository: ({ page, results, gender, inc }: SearchParams) => void;
-    isFetchingNextPage:boolean;
-    fetchNextPageCustom:(options?: FetchNextPageOptions | undefined) => any;
+    isFetchingNextPage: boolean;
+    fetchNextPageCustom: (options?: FetchNextPageOptions | undefined) => any;
     dataStudentsInfinityRoot: InfiniteData<StudentServerEntity[]> | undefined | StudentServerEntity[] | any;
-    refetchCustom:(options?: RefetchOptions | undefined) => any;
-    isFetching:boolean;
-    refetchActivated:boolean;
-    
+    refetchCustom: (options?: RefetchOptions | undefined) => any;
+    isFetching: boolean;
+    filterByGender:Gender ;
+    setFilterByGender: React.Dispatch<React.SetStateAction<Gender>>;
+
   }
 }

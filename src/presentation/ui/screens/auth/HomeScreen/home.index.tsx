@@ -11,117 +11,112 @@ import colors from '@/presentation/ui/styles/colors.json'
 import { ListItemStudents } from "@/presentation/ui/components/ListItemStudents/listItemStudents.index";
 import { Header } from "@/presentation/ui/components/Header/header.index";
 import { MultipleSkeletonLoaders } from "@/presentation/ui/components/SkeletonLoader/SkeletonLoader";
+import { BottomSheetStudentAnimated } from "@/presentation/ui/components/BottomSheetStudentAnimated";
+import { BottomSheetAnimated } from "@/presentation/ui/components/BottomSheetAnimated";
+import { SwitchAnimated } from "@/presentation/ui/components/SwitchAnimated";
 
 const HomeScreen: FC<IHome.Input> = () => {
 
-    const { isFetchingNextPage, fetchNextPageCustom, searchTerm, handleSearch, filteredData, dataStudentsInfinity, insets, isFetching, onRefreshFlatList: onRefreshFlatListCustom, refetchActivated } = useHomeViewModel({})
+    const { fetchNextPageCustom, searchTerm, handleSearch, filteredData, dataStudentsInfinity, insets, onRefreshFlatList: onRefreshFlatListCustom, dataSelected, setDataSelected, isOpenStudentSelected, closeSheetStudentSelected, toggleSheetStudentSelected, isOpen,
+        filterByGender, setFilterByGender, toggleSheet, closeSheet, convertGenderColor } = useHomeViewModel({})
 
     const studentsDataQuery = dataStudentsInfinity
 
-    const [stateRefresh, setStateRefresh] = useState(true);
-
-    const contactsPlaceholderList = useMemo(() => {
-        return Array.from({ length: 8 }).map(_ => null);
-    }, []);
+    const [stateRefresh, setStateRefresh] = useState(false);
 
     async function onRefreshFlatList() {
         setStateRefresh(true)
-        onRefreshFlatListCustom()
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await onRefreshFlatListCustom()
+        await new Promise(resolve => setTimeout(resolve, 300));
         setStateRefresh(false)
     }
-
-    async function settableRefreshFalse() {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setStateRefresh(false)
-    }
-
-
-    useEffect(() => {
-        settableRefreshFalse()
-    }, [])
-
 
     return (
-        <>
+        <SafeAreaContainer disableScroll containerClassName="bg-base-light px-4" >
 
-            <SafeAreaContainer disableScroll containerClassName="bg-base-light px-4" >
+            <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => Keyboard.dismiss()}
+                className="flex bg-main-25 flex-col items-end justify-end"
+                style={{ paddingTop: insets.top / 2, paddingBottom: insets.top / 2 }}>
+                <Header title="InnovaTech" />
+            </TouchableOpacity>
 
-                <TouchableOpacity
-                    activeOpacity={1}
-                    onPress={() => Keyboard.dismiss()}
-                    className="flex bg-main-25 flex-col items-end justify-end"
-                    style={{
-                        paddingTop: insets.top / 2, paddingBottom: insets.top / 2,
-                        //   pointerEvents: dataSelected ? 'none' : 'auto'
-                    }}
-                >
-                    <Header title="InnovaTech" />
+            <View className="flex-row items-center mb-1" >
+                <InputCustom
+                    placeholder="nome ou sobrenome..."
+                    containerClassName="w-[90%] text-[30px] pr-[4px]"
+                    inputClassName='h-[50px]'
+                    inputInternalClassName='text-[18px]'
+                    value={searchTerm}
+                    onChangeText={(value: string) => handleSearch(value)} />
 
+                <TouchableOpacity onPress={() => toggleSheet()} >
+                    <Feather name="filter" size={32} color={convertGenderColor(filterByGender)} />
                 </TouchableOpacity>
+            </View>
 
-                <View className="flex-row items-center mb-1" >
-                    <InputCustom
-                        placeholder="nome ou sobrenome..."
-                        containerClassName="w-[90%] text-[30px] pr-[4px]"
-                        inputClassName='h-[50px]'
-                        inputInternalClassName='text-[18px]'
-                        value={searchTerm}
-                        onChangeText={(value: string) => handleSearch(value)}
-                    />
+            {
+                !filteredData?.[0] && searchTerm.length > 0 &&
+                <ListEmptyComponent />
+            }
 
-                    <TouchableOpacity
-                        onPress={() => Keyboard.dismiss()}
-                    >
-                        {/* add funcao para alterar cor do filtro */}
-                        <Feather name="filter" size={30} color='#000' />
-                    </TouchableOpacity>
-                </View>
+            {stateRefresh &&
+                <MultipleSkeletonLoaders />
+            }
 
+            {
+                (filteredData?.[0] || studentsDataQuery?.[0]) && !stateRefresh &&
 
-                {
-                    !filteredData?.[0] && searchTerm.length > 0 &&
-                    <ListEmptyComponent />
-                }
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    data={searchTerm.length > 0 ? filteredData : studentsDataQuery}
+                    numColumns={1}
+                    contentContainerStyle={{ paddingBottom: 30, paddingTop: 25 }}
+                    renderItem={({ item }) =>
+                        <ListItemStudents
+                            data={item}
+                            toggleFn={toggleSheetStudentSelected}
+                            setDataSelected={setDataSelected} />}
+                    keyExtractor={(item, index) => index.toString()}
+                    onEndReached={() => searchTerm.length === 0 ? fetchNextPageCustom() : null}
 
-                {stateRefresh &&
-                    <MultipleSkeletonLoaders />
-                }
+                    ListFooterComponent={() => (
+                        searchTerm.length === 0 ? (
+                            <View className="py-6 w-full items-center gap-y-2" >
+                                <ActivityIndicator color={colors.neutral[300]} />
+                                <Text className=" font-karla700Bold text-lg text-neutral-300 leading-[20px] ">Carregando mais...</Text>
+                            </View>
+                        ) : null
+                    )}
 
-                {
-                    (filteredData?.[0] || studentsDataQuery?.[0]) && !stateRefresh &&
+                    onEndReachedThreshold={0.1}
+                    ItemSeparatorComponent={() => <View className='py-3' />}
+                    refreshing={false}
+                    onRefresh={() => onRefreshFlatList()}
+                />
+            }
 
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        data={searchTerm.length >0 ? filteredData : studentsDataQuery}
-                        numColumns={1}
-                        contentContainerStyle={{ paddingBottom: 30, paddingTop: 25 }}
-                        renderItem={({ item }) => <ListItemStudents data={item}
-                        //   toggleFn={toggleSheetStudentSelected}
-                        //   setDataSelected={setDataSelected}
+            <BottomSheetAnimated
+                title="Filtro por gênero"
+                isOpen={isOpen}
+                toggleBottomSheet={() => closeSheet()}>
 
-                        />}
-                        keyExtractor={(item, index) => index.toString()}
-                        onEndReached={() => searchTerm.length === 0 ? fetchNextPageCustom() : null}
+                <SwitchAnimated
+                    isOpen={isOpen || false}
+                    closeSheet={() => closeSheet()}
+                    setFiltered={setFilterByGender}
+                    filtered={filterByGender}
+                    onRefreshFlatList={onRefreshFlatList}
+                />
+            </BottomSheetAnimated>
 
-                        ListFooterComponent={() => (
-                            searchTerm.length === 0? (
-                                <View className="py-6 w-full items-center gap-y-2" >
-                                    <ActivityIndicator color={colors.neutral[300]} />
-                                    <Text className=" font-karla700Bold text-lg text-neutral-300 leading-[20px] ">Carregando mais...</Text>
-                                </View>
-                            ) : null
-                        )}
-
-                        onEndReachedThreshold={0.1}
-                        ItemSeparatorComponent={() => <View className='py-3' />}
-                        refreshing={false}
-                        onRefresh={() => onRefreshFlatList()}
-                    />
-                }
-
-            </SafeAreaContainer>
-        </>
+            {isOpenStudentSelected && <BottomSheetStudentAnimated
+                data={dataSelected}
+                isOpen={isOpenStudentSelected || false}
+                toggleBottomSheet={() => closeSheetStudentSelected()}>
+            </BottomSheetStudentAnimated>}
+        </SafeAreaContainer>
 
     );
 };

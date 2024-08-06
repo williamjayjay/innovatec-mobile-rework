@@ -3,19 +3,55 @@ import { useHomeContext } from "../contexts/useHome.context";
 import { StudentServerEntity } from "@/@core/domains/server-entities/student.server-entity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Keyboard } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import { Gender, SearchParams } from "@/@core/data/repositories/Students/types/student.type";
+
+import colors from '@/presentation/ui/styles/colors.json'
+
 
 export const useHomeViewModel = ({ }) => {
-  
+
   const insets = useSafeAreaInsets();
-  
-  const { storageDataStudents, isFetchingNextPage, fetchNextPageCustom , dataStudentsInfinityRoot, isFetching, refetchCustom, refetchActivated} = useHomeContext();
+
+  const { storageDataStudents, isFetchingNextPage, fetchNextPageCustom, dataStudentsInfinityRoot, isFetching, refetchCustom, filterByGender, setFilterByGender } = useHomeContext();
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredData, setFilteredData] = useState<StudentServerEntity[] | null>();
-  
-  console.log('storageDataStudents 000000', storageDataStudents?.[0]?.name)
-  console.log('dataStudentsInfinityRoot 11111', dataStudentsInfinityRoot?.pages?.flat?.()?.[0]?.name)
 
-  const dataStudentsInfinity = storageDataStudents ? storageDataStudents : dataStudentsInfinityRoot?.pages?.flat?.() as StudentServerEntity[]
+  const [dataSelected, setDataSelected] = useState<StudentServerEntity | null>(null);
+
+  const isOpenStudentSelected = useSharedValue(false);
+  const isOpen = useSharedValue(false);
+
+  const dataStudentsInfinity = dataStudentsInfinityRoot?.pages ? dataStudentsInfinityRoot?.pages?.flat?.() as StudentServerEntity[] : storageDataStudents
+
+
+  const toggleSheet = useCallback(() => {
+    isOpen.value = !isOpen.value;
+  }, []);
+
+  const closeSheet = useCallback(() => {
+    isOpen.value = false
+  }, []);
+
+
+  const closeSheetStudentSelected = useCallback(() => {
+    isOpenStudentSelected.value = false
+    // setIsLoadingBottomSheet(true)
+
+    setTimeout(() => {
+
+      setDataSelected(null)
+      // setIsLoadingBottomSheet(false)
+
+    }, 300);
+
+
+  }, []);
+
+  const toggleSheetStudentSelected = useCallback(() => {
+    isOpenStudentSelected.value = !isOpenStudentSelected.value;
+  }, []);
+
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -53,11 +89,26 @@ export const useHomeViewModel = ({ }) => {
     [searchTerm],
   )
 
-  const onRefreshFlatList = useCallback( () => {
-    console.log('ZZZZZZ->')
+  const onRefreshFlatList = useCallback(async () => {
     setSearchTerm('')
-     refetchCustom();
+    await refetchCustom();
     Keyboard.dismiss()
+  }, []);
+
+  const convertGenderColor = useCallback((gender?: Gender): string => {
+    switch (gender) {
+      case "male":
+        return colors.primary.maleColor;
+
+      case "female":
+        return colors.primary.femaleColor;
+
+      case "":
+        return colors.neutral[100]
+
+      default: return colors.neutral[100]
+
+    }
   }, []);
 
   return {
@@ -70,7 +121,15 @@ export const useHomeViewModel = ({ }) => {
     insets,
     isFetching,
     onRefreshFlatList,
-    refetchActivated
-  
+    dataSelected,
+    setDataSelected,
+    isOpenStudentSelected,
+    closeSheetStudentSelected,
+    toggleSheetStudentSelected,
+    isOpen,
+    filterByGender, setFilterByGender,
+    toggleSheet, closeSheet,
+    convertGenderColor
+
   };
 };

@@ -17,8 +17,6 @@ const Main: FC<IMain.Input> = (props = {}) => {
         return null;
     }
 
-    console.log('initialRoute -> >> ', initialRoute)
-
     return (
         <NavigationContainer>
 

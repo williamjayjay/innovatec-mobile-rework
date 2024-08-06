@@ -8,7 +8,7 @@ export const MultipleSkeletonLoaders = () => {
     }, []);
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 15 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingVertical: 15,  }}>
             {contactsPlaceholderList}
         </ScrollView>
     );
