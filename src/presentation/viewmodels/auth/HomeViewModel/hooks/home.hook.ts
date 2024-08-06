@@ -1,59 +1,56 @@
 import { useCallback, useState } from "react";
 import { useHomeContext } from "../contexts/useHome.context";
-import { InfiniteData } from "@tanstack/react-query";
 import { StudentServerEntity } from "@/@core/domains/server-entities/student.server-entity";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Keyboard } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
+import { Gender, SearchParams } from "@/@core/data/repositories/Students/types/student.type";
+
+import colors from '@/presentation/ui/styles/colors.json'
+
 
 export const useHomeViewModel = ({ }) => {
-  
+
   const insets = useSafeAreaInsets();
-  
-  const { students: studentsContext, storageDataStudents, isFetchingNextPage, fetchNextPage , dataStudentsInfinity, isFetching, refetch} = useHomeContext();
+
+  const { storageDataStudents, isFetchingNextPage, fetchNextPageCustom, dataStudentsInfinityRoot, isFetching, refetchCustom, filterByGender, setFilterByGender } = useHomeContext();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredData, setFilteredData] = useState<StudentServerEntity[]>([]);
+  const [filteredData, setFilteredData] = useState<StudentServerEntity[] | null>();
+
+  const [dataSelected, setDataSelected] = useState<StudentServerEntity | null>(null);
+
+  const isOpenStudentSelected = useSharedValue(false);
+  const isOpen = useSharedValue(false);
+
+  const dataStudentsInfinity = dataStudentsInfinityRoot?.pages ? dataStudentsInfinityRoot?.pages?.flat?.() as StudentServerEntity[] : storageDataStudents
 
 
-  // -- estados acima
+  const toggleSheet = useCallback(() => {
+    isOpen.value = !isOpen.value;
+  }, []);
 
-  //  todo [ ] - criar logica ao incializar o app, no contexto, verificar se existe valor no storage, se tiver irá popular o useState lá do context, e caso contrário irá fazer o fetch com o useQuery.
+  const closeSheet = useCallback(() => {
+    isOpen.value = false
+  }, []);
 
-  // const handleSearch = useCallback(
-  //   (value: string) => {
 
-  //     setSearchTerm(value)
+  const closeSheetStudentSelected = useCallback(() => {
+    isOpenStudentSelected.value = false
+    // setIsLoadingBottomSheet(true)
 
-  //     if (dataStudentsInfinity && value) {
-  //       // const allStudents = studentsContext((page: any) => page);
-  //       const allStudents = dataStudentsInfinity?.pages.flatMap((page: any) => page);
+    setTimeout(() => {
 
-  //       const filteredStudents = studentsContext.filter((student: StudentServerEntity) =>
-  //         (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
-  //       );
+      setDataSelected(null)
+      // setIsLoadingBottomSheet(false)
 
-  //       return setFilteredData(filteredStudents);
-  //     }
+    }, 300);
 
-  //     if (storageDataStudents && !dataStudentsInfinity && value) {
-  //       const allStudents = storageDataStudents
 
-  //       const filteredStudents = allStudents.filter((student: StudentServerEntity) =>
-  //         (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
-  //       );
-  //       return setFilteredData(filteredStudents);
-  //     }
-  //     else if (value === '' && !studentsContext) {
-  //       setFilteredData(storageDataStudents)
-  //     }
-  //     else if (value === '' && studentsContext) {
-  //       const allStudents = dataStudentsInfinity?.pages?.flatMap((page: any) => page);
+  }, []);
 
-  //       setFilteredData(allStudents)
-  //     }
-
-  //   },
-  //   [searchTerm],
-  // )
+  const toggleSheetStudentSelected = useCallback(() => {
+    isOpenStudentSelected.value = !isOpenStudentSelected.value;
+  }, []);
 
 
   const handleSearch = useCallback(
@@ -62,7 +59,7 @@ export const useHomeViewModel = ({ }) => {
       setSearchTerm(value)
 
       if (dataStudentsInfinity && value) {
-        const allStudents = dataStudentsInfinity.pages.flatMap((page: any) => page);
+        const allStudents = dataStudentsInfinity.map((page: any) => page);
 
         const filteredStudents = allStudents.filter((student: any) =>
           (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
@@ -74,7 +71,7 @@ export const useHomeViewModel = ({ }) => {
       if (storageDataStudents && !dataStudentsInfinity && value) {
         const allStudents = storageDataStudents
 
-        const filteredStudents = allStudents.filter((student: any) =>
+        const filteredStudents = allStudents?.filter((student: any) =>
           (student.name.first.toLowerCase().includes(value) || student.name.last.toLowerCase().includes(value))
         );
         return setFilteredData(filteredStudents);
@@ -83,7 +80,7 @@ export const useHomeViewModel = ({ }) => {
         setFilteredData(storageDataStudents)
       }
       else if (value === '' && dataStudentsInfinity) {
-        const allStudents = dataStudentsInfinity.pages.flatMap((page: any) => page);
+        const allStudents = dataStudentsInfinity.map((page: any) => page);
 
         setFilteredData(allStudents)
       }
@@ -92,29 +89,47 @@ export const useHomeViewModel = ({ }) => {
     [searchTerm],
   )
 
-
-
-  // const callBackNotUsed = useCallback(async () => {
-
-  // }, []);
-
-
   const onRefreshFlatList = useCallback(async () => {
     setSearchTerm('')
-    await refetch();
+    await refetchCustom();
     Keyboard.dismiss()
   }, []);
 
+  const convertGenderColor = useCallback((gender?: Gender): string => {
+    switch (gender) {
+      case "male":
+        return colors.primary.maleColor;
+
+      case "female":
+        return colors.primary.femaleColor;
+
+      case "":
+        return colors.neutral[100]
+
+      default: return colors.neutral[100]
+
+    }
+  }, []);
+
   return {
-    students: studentsContext,
     searchTerm,
     handleSearch,
     filteredData,
     isFetchingNextPage,
-    fetchNextPage,
+    fetchNextPageCustom,
     dataStudentsInfinity,
     insets,
     isFetching,
-    onRefreshFlatList
+    onRefreshFlatList,
+    dataSelected,
+    setDataSelected,
+    isOpenStudentSelected,
+    closeSheetStudentSelected,
+    toggleSheetStudentSelected,
+    isOpen,
+    filterByGender, setFilterByGender,
+    toggleSheet, closeSheet,
+    convertGenderColor
+
   };
 };

@@ -46,8 +46,6 @@ export const useMain = ({ awaitSplashTimer = 100 }: IMain.Input): IMain.Output =
 
   const isLoaded = appIsReady 
 
-  console.log('appIsReady --->',appIsReady)
-
   const onLayoutRootView = useCallback(async () => {
     if (isLoaded) {
 

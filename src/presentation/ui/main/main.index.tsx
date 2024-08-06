@@ -17,8 +17,6 @@ const Main: FC<IMain.Input> = (props = {}) => {
         return null;
     }
 
-    console.log('initialRoute -> >> ', initialRoute)
-
     return (
         <NavigationContainer>
 
@@ -26,7 +24,7 @@ const Main: FC<IMain.Input> = (props = {}) => {
                 <View className="flex-1" testID="main" onLayout={onLayoutRootView}>
 
                     <ReactQuery>
-                        <AllModelsContexts  >
+                        <AllModelsContexts appIsLoaded={isLoaded} >
                             <Routes initialRoute={initialRoute} />
                             <Toast
                                 position="top"
