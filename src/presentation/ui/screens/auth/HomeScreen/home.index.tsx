@@ -1,6 +1,6 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHomeViewModel } from "@/presentation/viewmodels/auth/HomeViewModel/hooks/home.hook";
-import { ActivityIndicator, FlatList, Keyboard, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Button, FlatList, Keyboard, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { IHome } from "@/presentation/ui/screens/auth/HomeScreen/types/home.type";
 import { SafeAreaContainer } from "@/presentation/ui/components/SafeAreaContainer/safeAreaContainer.index";
 import { Feather } from '@expo/vector-icons';
@@ -14,6 +14,10 @@ import { MultipleSkeletonLoaders } from "@/presentation/ui/components/SkeletonLo
 import { BottomSheetStudentAnimated } from "@/presentation/ui/components/BottomSheetStudentAnimated";
 import { BottomSheetAnimated } from "@/presentation/ui/components/BottomSheetAnimated";
 import { SwitchAnimated } from "@/presentation/ui/components/SwitchAnimated";
+import BottomSheet, { BottomSheetHandleProps, BottomSheetModal, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
+import { BottomSheetStudentAnimatedV2 } from "@/presentation/ui/components/BottomSheetStudentAnimatedV2";
+import { HandleBottomSheet } from "@/presentation/ui/components/HandleBottomSheet";
+import { useSharedValue } from "react-native-reanimated";
 
 const HomeScreen: FC<IHome.Input> = () => {
 
@@ -23,6 +27,12 @@ const HomeScreen: FC<IHome.Input> = () => {
     const studentsDataQuery = dataStudentsInfinity
 
     const [stateRefresh, setStateRefresh] = useState(false);
+    const [positionAnimated, setPositionAnimated] = useState(-1);
+
+    const animatedIndex = useSharedValue(0); // exemplo de uso com useSharedValue
+
+
+    console.log('positionAnimated', positionAnimated)
 
     async function onRefreshFlatList() {
         setStateRefresh(true)
@@ -31,14 +41,57 @@ const HomeScreen: FC<IHome.Input> = () => {
         setStateRefresh(false)
     }
 
+
+    // ref
+    // const bottomSheetRef = useRef<BottomSheet>(null);
+
+    // callbacks
+    // const handleSheetChanges = useCallback((index: number) => {
+    //     console.log('handleSheetChanges', index);
+    // }, []);
+
+    // const snapPoints = useMemo(() => ["0%", "50%"], []);
+
+    // ref
+    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+
+    // variables
+    const snapPoints = useMemo(() => ["25%", "50%", "80%"], []);
+
+
+    const handleSheetChanges = useCallback((index: number) => {
+        console.log('handleSheetChanges', index);
+        animatedIndex.value = index
+        setPositionAnimated(index)
+
+
+    }, []);
+
+    // callbacks
+    const handlePresentModalPress = useCallback(() => {
+        bottomSheetModalRef.current?.present();
+
+    }, []);
+
+
+    console.log('studentsDataQuerystudentsDataQuery',studentsDataQuery)
+
+
     return (
+
         <SafeAreaContainer disableScroll containerClassName="bg-base-light px-4" >
+
 
             <TouchableOpacity
                 activeOpacity={1}
                 onPress={() => Keyboard.dismiss()}
                 className="flex bg-main-25 flex-col items-end justify-end"
-                style={{ paddingTop: insets.top / 2, paddingBottom: insets.top / 2 }}>
+
+                style={{
+                    paddingTop: insets.top / 2, paddingBottom: insets.top / 2,
+                    // pointerEvents: animatedIndex.value !== 0 ? "none" : "auto"
+                }}
+            >
                 <Header title="InnovaTech" />
             </TouchableOpacity>
 
@@ -76,7 +129,7 @@ const HomeScreen: FC<IHome.Input> = () => {
                     renderItem={({ item }) =>
                         <ListItemStudents
                             data={item}
-                            toggleFn={toggleSheetStudentSelected}
+                            toggleFn={handlePresentModalPress}
                             setDataSelected={setDataSelected} />}
                     keyExtractor={(item, index) => index.toString()}
                     onEndReached={() => searchTerm.length === 0 ? fetchNextPageCustom() : null}
@@ -97,6 +150,34 @@ const HomeScreen: FC<IHome.Input> = () => {
                 />
             }
 
+
+            {/* {
+                positionAnimated >= 0 &&
+                <BottomSheetModal
+                    ref={bottomSheetModalRef}
+                    index={1}
+                    snapPoints={snapPoints}
+                    onChange={handleSheetChanges}
+                    style={{ marginHorizontal: 16 }}
+
+                    handleComponent={(props: BottomSheetHandleProps) => {
+                        return (
+                            <HandleBottomSheet {...props} style={{
+                                backgroundColor: colors.base.background,
+                            }} animatedIndex={animatedIndex} />
+                        )
+                    }}
+
+                >
+                    <BottomSheetScrollView style={{
+                        height: "100%",
+                        flex: 1
+                    }}>
+                        <BottomSheetStudentAnimatedV2 data={dataSelected} />
+                    </BottomSheetScrollView>
+                </BottomSheetModal>
+            } */}
+            
             <BottomSheetAnimated
                 title="Filtro por gênero"
                 isOpen={isOpen}
@@ -111,11 +192,6 @@ const HomeScreen: FC<IHome.Input> = () => {
                 />
             </BottomSheetAnimated>
 
-            {isOpenStudentSelected && <BottomSheetStudentAnimated
-                data={dataSelected}
-                isOpen={isOpenStudentSelected || false}
-                toggleBottomSheet={() => closeSheetStudentSelected()}>
-            </BottomSheetStudentAnimated>}
         </SafeAreaContainer>
 
     );

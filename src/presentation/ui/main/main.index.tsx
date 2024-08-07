@@ -10,6 +10,8 @@ import { Routes } from '@/presentation/ui/routes/main.routes';
 import { NavigationContainer } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { ToastNotification } from '@/presentation/ui/components/ToastNotification/toastNotification.index';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const Main: FC<IMain.Input> = (props = {}) => {
     const { onLayoutRootView, initialRoute, isLoaded } = useMain(props);
@@ -19,6 +21,10 @@ const Main: FC<IMain.Input> = (props = {}) => {
 
     return (
         <NavigationContainer>
+            <GestureHandlerRootView>
+            <BottomSheetModalProvider>
+
+
 
             <SafeAreaProvider>
                 <View className="flex-1" testID="main" onLayout={onLayoutRootView}>
@@ -38,6 +44,10 @@ const Main: FC<IMain.Input> = (props = {}) => {
                 </View>
                 <StatusBar style="auto" />
             </SafeAreaProvider>
+            </BottomSheetModalProvider>
+
+            </GestureHandlerRootView>
+
         </NavigationContainer>
 
     );

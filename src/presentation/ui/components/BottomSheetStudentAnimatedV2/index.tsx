@@ -1,64 +1,20 @@
 import React from 'react';
-import {
-    TouchableOpacity,
-    StyleSheet
-} from 'react-native';
 
 import Animated, {
-    useSharedValue,
-    useAnimatedStyle,
-    useDerivedValue,
-    withDelay,
-    withTiming,
 } from 'react-native-reanimated';
 import colors from '@/presentation/ui/styles/colors.json'
 import { format } from 'date-fns';
 import { convertGender } from '@/@core/utils/convertGender';
-import { BottomSheetStudentsProps } from './types';
+import { BottomSheetStudentsV2Props } from './types';
 
-const BottomSheetStudentAnimated: React.FC<BottomSheetStudentsProps> = (
+const BottomSheetStudentAnimatedV2: React.FC<BottomSheetStudentsV2Props> = (
     ({ isOpen, toggleBottomSheet, duration = 700, data }) => {
-
-        const height = useSharedValue(0);
-
-        const progress = useDerivedValue(() =>
-            withTiming(isOpen.value ? 0 : 1, { duration })
-        );
-
-        const sheetStyle = useAnimatedStyle(() => ({
-            transform: [{ translateY: progress.value * 2 * height.value }],
-        }));
-
-        const backdropStyle = useAnimatedStyle(() => ({
-            opacity: 1 - progress.value,
-            zIndex: isOpen.value
-                ? 1
-                : withDelay(duration, withTiming(-1, { duration: 0 }
-
-                )),
-        }));
 
         const genderVerb = data?.gender === 'male' ? 'Aluno:' : 'Aluna:'
 
         return (
-            <>
-                <Animated.View style={[sheetStyles.backdrop, backdropStyle, {position:'absolute'} ]}>
-                    <TouchableOpacity className='flex-1'
-
-                        onPress={() => {
-                            toggleBottomSheet();
-                        }}
-                    />
-                </Animated.View>
-
                 <Animated.View
-                    className='bg-base-background absolute bottom-0 p-4 h-[80%] w-full self-center rounded-tl-[20px] rounded-tr-[20px] z-[2]  '
-                    onLayout={(e) => {
-                        height.value = e.nativeEvent.layout.height;
-                    }}
-                    style={sheetStyle}>
-
-                    {
+                    className='h-full  bg-base-background pt-[130px] px-4'>
                         <>
                             <Animated.Image
                                 style={{ borderWidth: 2, borderColor: colors.neutral[50], marginTop: -100 }}
@@ -66,12 +22,13 @@ const BottomSheetStudentAnimated: React.FC<BottomSheetStudentsProps> = (
                                 source={data ? { uri: data?.picture?.medium } : require('@/presentation/ui/assets/images/no-user.png')}
                             />
 
-                            <Animated.ScrollView showsVerticalScrollIndicator={false} className='gap-y-3 mt-3' >
+                            <Animated.View className='gap-y-3 mt-3' >
 
                                 <Animated.Text numberOfLines={2}
                                     className="font-karla500Medium text-sm text-neutral-300  capitalize" >
                                     Id: {data?.login?.uuid}</Animated.Text>
 
+                                  
                                 <Animated.Text numberOfLines={2}
                                     className="font-karla500Medium text-lg text-neutral-300  capitalize" >
                                     {genderVerb} {data?.name?.first} {data?.name?.last}</Animated.Text>
@@ -102,25 +59,12 @@ const BottomSheetStudentAnimated: React.FC<BottomSheetStudentsProps> = (
 
                                 <Animated.View className='h-[150px] ' />
 
-                            </Animated.ScrollView>
+                            </Animated.View>
                         </>
-
-                    }
-
                 </Animated.View>
-            </>
-
         );
     }
 );
 
-const sheetStyles = StyleSheet.create({
 
-    backdrop: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        zIndex: 999
-    },
-});
-
-export { BottomSheetStudentAnimated }
+export { BottomSheetStudentAnimatedV2 }
