@@ -119,7 +119,7 @@ Para garantir o funcionamento adequado da nossa aplicação, verifique abaixo:
 
 <!-- --------------------- -->
 ## UI UX
-UI e UX feita pelo time innovatec.
+UI e UX feita pelo time C2S.
 
 | Tela de login | Tela Home |
 |:-------------------------:|:-------------------------:|
