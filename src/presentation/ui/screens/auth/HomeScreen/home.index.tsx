@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useState } from "react";
 import { useHomeViewModel } from "@/presentation/viewmodels/auth/HomeViewModel/hooks/home.hook";
 import { ActivityIndicator, FlatList, Keyboard, Text, TouchableOpacity, View } from "react-native";
 import { IHome } from "@/presentation/ui/screens/auth/HomeScreen/types/home.type";

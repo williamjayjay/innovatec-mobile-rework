@@ -39,8 +39,8 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
       });
 
       if (!storageDataStudents) {
-        void await StudentsStorage.addAllStudentsStorage(resultStudentUseCase);
         setStorageDataStudents(resultStudentUseCase)
+         await StudentsStorage.addAllStudentsStorage(resultStudentUseCase);
       }
 
       return resultStudentUseCase
@@ -74,11 +74,12 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
 
     const savedDataStorageStudents = await StudentsStorage.getAllStudentsStorage();
 
-    if (savedDataStorageStudents) {
+
+    if (savedDataStorageStudents?.[0]) {
       return setStorageDataStudents(savedDataStorageStudents)
     }
 
-    return await refetchCustom()
+    await refetch()
 
   }, [appIsLoaded]);
 
