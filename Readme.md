@@ -123,16 +123,16 @@ UI e UX feita pelo time C2S.
 
 | Tela de login | Tela Home |
 |:-------------------------:|:-------------------------:|
-| ![Tela de login](.github/assets/tela_login.png) | ![Tela Home](.github/assets/tela_home.png) |
+| ![Tela de login](.github/assets/tela_login.PNG) | ![Tela Home](.github/assets/tela_home.PNG) |
 
 | Modal de filtros | Barra de Pesquisa |
 |:-------------------------:|:-------------------------:|
-| ![Modal de filtros](.github/assets/modal_filtros.png) | ![Barra de Pesquisa](.github/assets/barra_pesquisa.png) |
+| ![Modal de filtros](.github/assets/modal_filtros.PNG) | ![Barra de Pesquisa](.github/assets/barra_pesquisa.PNG) |
 
 | Shimmer Effect | Modal de perfil |
 |:-------------------------:|:-------------------------:|
-| ![Shimmer Effect](.github/assets/shimmer_effect.png) | ![Modal de perfil](.github/assets/modal_perfil.png) |
+| ![Shimmer Effect](.github/assets/shimmer_effect.PNG) | ![Modal de perfil](.github/assets/modal_perfil.PNG) |
 
 | Scroll Infinity |
 |:-------------------------:|
-| ![Scroll Infinity](.github/assets/scroll_infinity.png) |
+| ![Scroll Infinity](.github/assets/scroll_infinity.PNG) |
