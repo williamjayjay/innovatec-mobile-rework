@@ -23,7 +23,7 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
   const [storageDataStudents, setStorageDataStudents] = useState<StudentServerEntity[] | [] | null>(null);
   const [filterByGender, setFilterByGender] = useState<Gender>("");
 
-  const studentRepository = new StudentsRepository()
+  const studentRepository = new StudentsRepository('/api')
   const getSudentsUseCase = new GetStudentsUseCase(studentRepository);
 
   const queryClient = useQueryClient();
@@ -55,7 +55,7 @@ const HomeProvider: FC<IHome.Input> = ({ children, appIsLoaded }) => {
     queryKey: ['students', filterByGender],
     queryFn: ({ pageParam }) => getValuesFromRepository({
       page: pageParam,
-      results: 10,
+      results: 20,
       inc: 'gender,name,location,email,login,dob,phone,picture,nat',
       gender: filterByGender,
 
