@@ -20,7 +20,7 @@
 Este aplicativo tem como principais funcionalidades a busca de dados de estudantes a partir de uma API externa, o armazenamento dessas informações no storage, a exibição em uma lista com scroll infinito, a apresentação dos detalhes de cada aluno em um modal dinâmico, e a possibilidade de alterar o gênero do estudante em um modal separado.</p>
 
 <p align="center">
-<img alt="poc app trainer" src="github/assets/cover.png" />
+<img alt="app students" src=".github/assets/cover.png" />
 </p>
 
 ## 🥶 Sobre o projeto
@@ -123,16 +123,16 @@ UI e UX feita pelo time innovatec.
 
 | Tela de login | Tela Home |
 |:-------------------------:|:-------------------------:|
-| ![Tela de login](github/assets/tela_login.png) | ![Tela Home](github/assets/tela_home.png) |
+| ![Tela de login](.github/assets/tela_login.png) | ![Tela Home](.github/assets/tela_home.png) |
 
 | Modal de filtros | Barra de Pesquisa |
 |:-------------------------:|:-------------------------:|
-| ![Modal de filtros](github/assets/modal_filtros.png) | ![Barra de Pesquisa](github/assets/barra_pesquisa.png) |
+| ![Modal de filtros](.github/assets/modal_filtros.png) | ![Barra de Pesquisa](.github/assets/barra_pesquisa.png) |
 
 | Shimmer Effect | Modal de perfil |
 |:-------------------------:|:-------------------------:|
-| ![Shimmer Effect](github/assets/shimmer_effect.png) | ![Modal de perfil](github/assets/modal_perfil.png) |
+| ![Shimmer Effect](.github/assets/shimmer_effect.png) | ![Modal de perfil](.github/assets/modal_perfil.png) |
 
 | Scroll Infinity |
 |:-------------------------:|
-| ![Scroll Infinity](github/assets/scroll_infinity.png) |
+| ![Scroll Infinity](.github/assets/scroll_infinity.png) |
